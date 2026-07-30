@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  seasons Season[]
+}
+
+model Team {
+  id                  Int     @id @default(autoincrement())
+  name                String  @unique
+  color               String
+  budget              Decimal
+  constructorRating   Int
+
+  racePace            Int
+  qualifyingPace      Int
+
+  straightSpeed       Int
+  cornering           Int
+  reliability         Int
+  pitCrew             Int
+
+  drivers Driver[]
+}
+
+model Driver {
+  id           Int    @id @default(autoincrement())
+  name         String @unique
+
+  pace         Int
+  wetSkill     Int
+  consistency  Int
+  aggression   Int
+
+  teamId Int
+  team   Team @relation(fields: [teamId], references: [id])
+
+  raceDrivers RaceDriver[]
+  raceEvents  RaceEvent[]
+}
+
+model Track {
+  id                Int    @id @default(autoincrement())
+  name              String @unique
+
+  laps              Int
+
+  straightBias      Int
+  cornerBias        Int
+  rainProbability   Int
+
+  races Race[]
+}
+
+model Season {
+  id           Int      @id @default(autoincrement())
+
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+
+  name         String
+  difficulty   Int
+
+  currentRaceId Int?
+  currentRace   Race? @relation("CurrentRace", fields: [currentRaceId], references: [id])
+
+  completed    Boolean @default(false)
+
+  createdAt    DateTime @default(now())
+
+  races Race[] @relation("SeasonRaces")
+}
+
+model Race {
+  id Int @id @default(autoincrement())
+
+  trackId Int
+  track   Track @relation(fields: [trackId], references: [id])
+
+  seasonId Int
+  season   Season @relation("SeasonRaces", fields: [seasonId], references: [id])
+
+  weather    String
+  temperature Decimal
+
+  completed Boolean @default(false)
+
+  raceEvents  RaceEvent[]
+  raceDrivers RaceDriver[]
+
+  currentSeason Season? @relation("CurrentRace")
+}
+
+model RaceEvent {
+  id Int @id @default(autoincrement())
+
+  raceId Int
+  race   Race @relation(fields: [raceId], references: [id])
+
+  driverId Int?
+  driver   Driver? @relation(fields: [driverId], references: [id])
+
+  lap Int
+
+  type String
+
+  description String
+
+  createdAt DateTime @default(now())
+}
+
+model RaceDriver {
+  id Int @id @default(autoincrement())
+
+  raceId Int
+  race   Race @relation(fields: [raceId], references: [id])
+
+  driverId Int
+  driver   Driver @relation(fields: [driverId], references: [id])
+
+  gridPosition   Int
+  finishPosition Int?
+
+  pitStops Int @default(0)
+
+  bestLap Decimal?
+
+  points Int @default(0)
+
+  status String
+}

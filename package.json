@@ -1,0 +1,27 @@
+{
+  "name": "race_wall",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^11.1.1",
+      "onFail": "download"
+    }
+  },
+  "type": "module",
+  "dependencies": {
+    "@prisma/client": "^7.9.1",
+    "typescript": "^7.0.2"
+  },
+  "devDependencies": {
+    "prisma": "^7.9.1"
+  }
+}
