@@ -45,6 +45,8 @@ model Driver {
 
   teamId Int
   team   Team @relation(fields: [teamId], references: [id])
+  
+  tyreManagement Int
 
   raceDrivers RaceDriver[]
   raceEvents  RaceEvent[]
@@ -59,7 +61,11 @@ model Track {
   straightBias      Int
   cornerBias        Int
   rainProbability   Int
-
+  
+  pitLoss           Int
+  safetyCarChance   Int
+  abrasiveness      Int
+  
   races Race[]
 }
 
